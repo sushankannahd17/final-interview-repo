@@ -3,9 +3,11 @@ services:
   # ── RabbitMQ ───────────────────────────────────────────────────────────────
   rabbitmq:
     image: rabbitmq:3-management
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"    # management UI → http://localhost:15672 (guest/guest)
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"    # management UI → http://localhost:15672 (guest/guest)
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -23,7 +25,7 @@ services:
       # Override AMQP_URL to use the compose service name instead of localhost
       AMQP_URL: amqp://guest:guest@rabbitmq:5672/
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -61,8 +63,11 @@ services:
         # compose network name, so keep this as localhost.
         VITE_API_BASE_URL: http://localhost:8000
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     depends_on:
       api:
         condition: service_healthy
     restart: on-failure
+
+volumes:
+  rabbitmq_data:

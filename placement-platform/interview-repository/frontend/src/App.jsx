@@ -1,18 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { getSupabaseClient, fetchCurrentUserProfile } from './lib/supabaseClient';
-import { AuthPage } from './components/AuthPage';
-import { StudentDashboard } from './components/StudentDashboard';
-import { MentorDashboard } from './components/MentorDashboard';
-import { AlumniDashboard } from './components/AlumniDashboard';
 import { ProtectedRoute, ProfileGate } from './components/ProtectedRoute';
 import { ToastContainer } from './components/Toast';
-import { DashboardPage } from './components/admin/DashboardPage';
-import { StudentsPage } from './components/admin/StudentsPage';
-import { MentorsPage } from './components/admin/MentorsPage';
-import { AlumniPage } from './components/admin/AlumniPage';
-import { ModerationPage } from './components/admin/ModerationPage';
 import './components/Auth.css';
+
+const AuthPage = lazy(() => import('./components/AuthPage').then((module) => ({ default: module.AuthPage })));
+const StudentDashboard = lazy(() => import('./components/StudentDashboard').then((module) => ({ default: module.StudentDashboard })));
+const MentorDashboard = lazy(() => import('./components/MentorDashboard').then((module) => ({ default: module.MentorDashboard })));
+const AlumniDashboard = lazy(() => import('./components/AlumniDashboard').then((module) => ({ default: module.AlumniDashboard })));
+const DashboardPage = lazy(() => import('./components/admin/DashboardPage').then((module) => ({ default: module.DashboardPage })));
+const StudentsPage = lazy(() => import('./components/admin/StudentsPage').then((module) => ({ default: module.StudentsPage })));
+const MentorsPage = lazy(() => import('./components/admin/MentorsPage').then((module) => ({ default: module.MentorsPage })));
+const AlumniPage = lazy(() => import('./components/admin/AlumniPage').then((module) => ({ default: module.AlumniPage })));
+const ModerationPage = lazy(() => import('./components/admin/ModerationPage').then((module) => ({ default: module.ModerationPage })));
 
 function AppContent() {
   const [user, setUser] = useState(null);
@@ -151,6 +152,7 @@ function AppContent() {
 
   return (
     <>
+      <Suspense fallback={<div role="status" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading page…</div>}>
       <Routes>
         {/* Public Login Route */}
         <Route
@@ -353,6 +355,7 @@ function AppContent() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
 
       {/* Global Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />

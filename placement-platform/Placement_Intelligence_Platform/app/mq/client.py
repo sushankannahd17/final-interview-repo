@@ -10,6 +10,14 @@ def get_channel():
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
-    # Ensure the queue exists before any publish or consume
-    channel.queue_declare(queue=settings.amqp_queue)
+    dead_letter_queue = f"{settings.amqp_queue}.dead"
+    channel.queue_declare(queue=dead_letter_queue, durable=True)
+    channel.queue_declare(
+        queue=settings.amqp_queue,
+        durable=True,
+        arguments={
+            "x-dead-letter-exchange": "",
+            "x-dead-letter-routing-key": dead_letter_queue,
+        },
+    )
     return connection, channel

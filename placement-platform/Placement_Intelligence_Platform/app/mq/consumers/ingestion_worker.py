@@ -15,12 +15,16 @@ logger = logging.getLogger("ingestion_worker")
 
 def _parse_experience_id(body: bytes) -> str:
     message = body.decode("utf-8").strip()
+    if not message:
+        raise ValueError("message must contain an experience_id")
     try:
         parsed = json.loads(message)
     except json.JSONDecodeError:
         return message
     if isinstance(parsed, dict) and isinstance(parsed.get("experience_id"), str):
-        return parsed["experience_id"]
+        experience_id = parsed["experience_id"].strip()
+        if experience_id:
+            return experience_id
     raise ValueError("message must contain an experience_id")
 
 
@@ -49,10 +53,12 @@ def _combined_text(row: dict[str, Any]) -> str:
 
 
 def process_message(ch, method, properties, body):
-    experience_id = _parse_experience_id(body)
-    repository = SupabaseRepository()
-    logger.info("[WORKER] received experience_id=%s", experience_id)
+    experience_id = None
+    repository = None
     try:
+        experience_id = _parse_experience_id(body)
+        repository = SupabaseRepository()
+        logger.info("[WORKER] received experience_id=%s", experience_id)
         repository.update_raw_status(experience_id, "PROCESSING", stage="AI_PIPELINE", error=None)
         row = repository.fetch_raw_experience(experience_id)
         raw = RawExperience(
@@ -76,7 +82,10 @@ def process_message(ch, method, properties, body):
     except Exception as err:
         logger.exception("[WORKER] failed experience_id=%s: %s", experience_id, err)
         try:
-            repository.update_raw_status(experience_id, "FAILED", stage="AI_PIPELINE", error=str(err)[:1000])
+            if repository is not None and experience_id is not None:
+                repository.update_raw_status(experience_id, "FAILED", stage="AI_PIPELINE", error=str(err)[:1000])
+        except Exception:
+            logger.exception("[WORKER] could not mark experience_id=%s as failed", experience_id)
         finally:
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 

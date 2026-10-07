@@ -11,6 +11,8 @@ import com.agenticai.interviewrepo.repository.StudentRepository;
 import com.agenticai.interviewrepo.repository.UserRepository;
 import com.agenticai.interviewrepo.service.AdminManagementService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,6 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
+@Profile("local-tools")
+@PreAuthorize("hasAnyAuthority('ADMIN','ROLE_ADMIN')")
 @RequestMapping("/api/test")
 public class TestController {
 

@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import logging
 import time
+from collections import OrderedDict
 from datetime import datetime, timezone
+from threading import Lock
 from typing import Optional
 
 from app.agents.content.agent import ContentAgent
@@ -27,7 +29,10 @@ from app.services.llm import get_llm
 
 logger = logging.getLogger("agents.master")
 
-_sessions: dict[str, AgentSession] = {}
+_MAX_SESSIONS = 2_000
+_MAX_SESSION_MESSAGES = 40
+_sessions: OrderedDict[str, AgentSession] = OrderedDict()
+_sessions_lock = Lock()
 
 
 class MasterAgent:
@@ -121,8 +126,13 @@ class MasterAgent:
 
         session.messages.append({"role": "user", "content": request.message})
         session.messages.append({"role": "assistant", "content": answer})
+        session.messages = session.messages[-_MAX_SESSION_MESSAGES:]
         session.updated_at = datetime.now(timezone.utc)
-        _sessions[request.session_id] = session
+        with _sessions_lock:
+            _sessions[request.session_id] = session
+            _sessions.move_to_end(request.session_id)
+            while len(_sessions) > _MAX_SESSIONS:
+                _sessions.popitem(last=False)
 
         return MasterResponse(
             answer=answer,
@@ -266,10 +276,18 @@ class MasterAgent:
 
     # ------------------------------------------------------------------
     def _get_or_create_session(self, session_id: str) -> AgentSession:
-        if session_id not in _sessions:
-            _sessions[session_id] = AgentSession(session_id=session_id)
-        return _sessions[session_id]
+        with _sessions_lock:
+            session = _sessions.get(session_id)
+            if session is None:
+                session = AgentSession(session_id=session_id)
+                _sessions[session_id] = session
+            _sessions.move_to_end(session_id)
+            return session
 
     @staticmethod
     def get_session(session_id: str) -> Optional[AgentSession]:
-        return _sessions.get(session_id)
+        with _sessions_lock:
+            session = _sessions.get(session_id)
+            if session is not None:
+                _sessions.move_to_end(session_id)
+            return session

@@ -22,8 +22,8 @@ class IntentPlan(BaseModel):
 
 
 class MasterRequest(BaseModel):
-    message: str
-    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    message: str = Field(min_length=1, max_length=4000)
+    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()), min_length=1, max_length=128)
     context: Optional[AgentContext] = None
 
 

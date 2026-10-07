@@ -166,11 +166,6 @@ export const SubmissionsPage = () => {
         eyebrow="Workspace"
         title="My Submissions"
         subtitle="Track the interview experiences you've shared and their review status."
-        actions={
-          <Button icon={Plus} onClick={openCreate}>
-            Submit an experience
-          </Button>
-        }
       />
 
       {message && (

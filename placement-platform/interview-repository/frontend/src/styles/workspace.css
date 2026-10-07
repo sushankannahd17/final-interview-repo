@@ -162,6 +162,14 @@
   margin: 0;
 }
 
+.ws h1,
+.ws h2,
+.ws h3,
+.ws h4 {
+  font-family: 'Plus Jakarta Sans', var(--ws-font);
+  text-wrap: pretty;
+}
+
 .ws a {
   color: inherit;
 }
@@ -361,7 +369,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
   margin-bottom: 2.25rem;
 }
@@ -369,8 +377,8 @@
 .ws-page-title {
   font-size: 2rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
+  letter-spacing: -0.035em;
+  line-height: 1.16;
   margin-top: 0.35rem;
 }
 
@@ -378,6 +386,7 @@
   color: var(--ws-text-2);
   margin-top: 0.5rem;
   max-width: 620px;
+  line-height: 1.65;
 }
 
 .ws-section {
@@ -393,9 +402,9 @@
 }
 
 .ws-section-title {
-  font-size: 1.05rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 .ws-section-link {

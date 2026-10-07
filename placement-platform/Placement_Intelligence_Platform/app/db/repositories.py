@@ -24,7 +24,8 @@ class SupabaseRepository(EntityRepository):
             EntityType.QUESTION: "question_canonical"
         }
         
-        # Map each EntityType to its specific database column
+        # Equality is performed by Postgres so unique indexes remain useful as
+        # canonical tables grow; never download the full entity table here.
         col_map = {
             EntityType.COMPANY: "normalized_name",
             EntityType.ROLE: "normalized_name",
@@ -39,13 +40,14 @@ class SupabaseRepository(EntityRepository):
             return None
 
         try:
-            res = supabase.table(target_table).select("*").execute()
-            rows = res.data or []
-            row = next(
-                (candidate for candidate in rows
-                 if str(candidate.get(col_name) or "").casefold().strip() == normalized_value.casefold().strip()),
-                None,
+            res = (
+                supabase.table(target_table)
+                .select("*")
+                .eq(col_name, normalized_value.casefold().strip())
+                .limit(1)
+                .execute()
             )
+            row = (res.data or [None])[0]
             if row is None:
                 return None
 
@@ -80,20 +82,25 @@ class SupabaseRepository(EntityRepository):
             return []
 
         try:
-            res = supabase.table(target_table).select("*").limit(limit).execute()
-            candidates = []
+            result = supabase.rpc(
+                "find_similar_entities",
+                {
+                    "p_entity_type": entity_type.value,
+                    "p_normalized_value": normalized_value,
+                    "p_limit": max(1, min(limit, 50)),
+                },
+            ).execute()
 
-            for row in (res.data or []):
-                canonical_val = row.get("canonical_text") or (
-                    row.get("round_name") if entity_type is EntityType.ROUND else row.get("name")
-                ) or ""
+            candidates = []
+            for row in result.data or []:
+                canonical_val = row.get("canonical_name") or ""
                 candidates.append(
                     ExistingEntity(
-                        entity_id=str(row["id"]),
+                        entity_id=str(row["entity_id"]),
                         entity_type=entity_type,
                         canonical_name=canonical_val,
-                        normalized_value=canonical_val.lower(),
-                        tokens=canonical_val.lower().split(),
+                        normalized_value=row.get("normalized_value") or canonical_val.lower(),
+                        tokens=(row.get("normalized_value") or canonical_val.lower()).split(),
                         category=row.get("category"),
                         topic=row.get("topic"),
                         subtopic=row.get("subtopic"),

@@ -2,13 +2,17 @@ package com.agenticai.interviewrepo.controller;
 
 import com.agenticai.interviewrepo.model.Role;
 import com.agenticai.interviewrepo.service.SupabaseAdminService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Profile("local-tools")
+@PreAuthorize("hasAnyAuthority('ADMIN','ROLE_ADMIN')")
 @RequestMapping("/api/test-supabase")
 public class SupabaseTestController {
 

@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
 import { getSupabaseClient } from '../../lib/supabaseClient';
 import './AdminStyles.css';
 

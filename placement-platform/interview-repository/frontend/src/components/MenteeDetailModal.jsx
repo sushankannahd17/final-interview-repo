@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
   X,
-  User,
-  Mail,
-  Phone,
-  GraduationCap,
-  Calendar,
   ExternalLink,
   Code2,
   Globe,
   FileText,
   Briefcase,
-  Award,
-  Sparkles,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';

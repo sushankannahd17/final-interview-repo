@@ -5,15 +5,10 @@ import {
   CheckCircle,
   MessageSquare,
   Save,
-  Clock,
   Sparkles,
-  BookOpen,
-  UserCheck,
   UserPlus,
   Eye,
-  ExternalLink,
   GraduationCap,
-  Briefcase,
 } from 'lucide-react';
 import { DashboardLayout } from './DashboardLayout';
 import { MenteeDetailModal } from './MenteeDetailModal';
@@ -122,7 +117,7 @@ export const MentorDashboard = ({ user, session, userProfile }) => {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (res.ok) {
-        const assignedStudent = await res.json();
+        await res.json();
         setMessage(`Assigned ${studentName || 'student'} as your mentee!`);
         fetchMentees();
       } else {

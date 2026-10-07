@@ -201,7 +201,7 @@ export const StudentsPage = ({ user, session, userProfile }) => {
               errorMessage = `❌ Error: ${errorText.substring(0, 200)}`;
             }
           }
-        } catch (parseError) {
+        } catch {
           errorMessage = `❌ Error: HTTP ${res.status} - ${res.statusText}`;
         }
 

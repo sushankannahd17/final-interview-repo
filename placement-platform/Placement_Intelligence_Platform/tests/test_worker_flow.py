@@ -91,3 +91,13 @@ def test_worker_marks_failure_and_nacks_without_ack(monkeypatch):
     assert channel.nacks == [(7, False)]
     assert repository.statuses[-1][0][1] == "FAILED"
     assert repository.statuses[-1][1]["error"] == "persistence failed"
+
+
+def test_worker_nacks_malformed_message_without_crashing(monkeypatch):
+    channel = FakeChannel()
+    method = FakeMethod()
+
+    ingestion_worker.process_message(channel, method, None, b"{}")
+
+    assert channel.acks == []
+    assert channel.nacks == [(7, False)]

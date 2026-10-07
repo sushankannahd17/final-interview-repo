@@ -252,12 +252,6 @@ export const AlumniManagement = ({ session }) => {
     setActionMenuOpen(null);
   };
 
-  const openViewModal = (alumniItem) => {
-    setSelectedAlumni(alumniItem);
-    setModalMode('view');
-    setShowModal(true);
-  };
-
   const resetForm = () => {
     setFormData({
       name: '',

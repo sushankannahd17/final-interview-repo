@@ -7,10 +7,10 @@ from pydantic import BaseModel, Field
 
 
 class PreparationRequest(BaseModel):
-    company: Optional[str] = None
-    role: Optional[str] = None
-    days_available: Optional[int] = None
-    message: Optional[str] = None
+    company: Optional[str] = Field(default=None, max_length=150)
+    role: Optional[str] = Field(default=None, max_length=100)
+    days_available: Optional[int] = Field(default=None, ge=1, le=180)
+    message: Optional[str] = Field(default=None, max_length=1000)
     caller_agent: Optional[str] = None
 
 

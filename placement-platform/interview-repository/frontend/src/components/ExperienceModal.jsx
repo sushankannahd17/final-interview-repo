@@ -5,10 +5,8 @@ import {
   Trash2,
   Building,
   Briefcase,
-  Calendar,
   CheckCircle2,
   AlertCircle,
-  HelpCircle,
   Sparkles,
 } from 'lucide-react';
 

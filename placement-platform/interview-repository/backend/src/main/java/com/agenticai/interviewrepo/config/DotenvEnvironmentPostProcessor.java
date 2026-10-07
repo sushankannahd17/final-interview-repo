@@ -38,7 +38,9 @@ public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor 
                             (value.startsWith("'") && value.endsWith("'"))) {
                             value = value.substring(1, value.length() - 1);
                         }
-                        System.out.println("=== Dotenv: " + key + " = " + (key.contains("PASSWORD") || key.contains("KEY") ? "***" : value) + " ===");
+                        // Environment values can contain credentials in unexpected fields (for example
+                        // AMQP URLs), so log only the key name and never the value.
+                        System.out.println("=== Dotenv: loaded " + key + " ===");
                         properties.put(key, value);
                         count++;
                     }

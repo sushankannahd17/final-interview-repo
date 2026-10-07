@@ -54,6 +54,7 @@ def test_master_session_created_on_first_run(monkeypatch):
 
     monkeypatch.setattr(MasterRouter, "classify_intent", fake_classify)
     monkeypatch.setattr(SearchAgent, "run", fake_search)
+    monkeypatch.setattr(MasterAgent, "_synthesize", lambda self, query, text: text)
 
     session_id = "test-session-xyz"
     _sessions.pop(session_id, None)
@@ -91,6 +92,7 @@ def test_get_session_returns_session_after_run(monkeypatch):
 
     monkeypatch.setattr(MasterRouter, "classify_intent", fake_classify)
     monkeypatch.setattr(SearchAgent, "run", fake_search)
+    monkeypatch.setattr(MasterAgent, "_synthesize", lambda self, query, text: text)
 
     session_id = "test-session-get-abc"
     _sessions.pop(session_id, None)

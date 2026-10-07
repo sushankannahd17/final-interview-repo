@@ -77,17 +77,21 @@ SUPABASE_KEY=your-anon-or-service-role-key
 AMQP_URL=amqp://guest:guest@localhost:5672/
 
 # Google Gemini
-GEMINI_API_KEY=your-gemini-api-key
+LLM_API_KEY=your-gemini-api-key
 
-# Security (any random string)
-INTERNAL_API_KEY=change-me-before-deploy
+# Security — generate a unique value with: openssl rand -hex 32
+INTERNAL_API_KEY=replace-with-a-random-secret
 
 # Optional feature flags (default off)
 WEB_SEARCH_ENABLED=false
 VECTOR_SEARCH_ENABLED=false
 ```
 
-### 4. Start RabbitMQ (if running locally)
+### 4. Prepare Supabase
+
+For a new project, run `sql/master_schema.sql` in the Supabase SQL Editor. For an existing database, run the SQL files in `sql/migrations/` to add required indexes and database functions.
+
+### 5. Start RabbitMQ (if running locally)
 
 ```bash
 docker run -d --name rabbitmq \
@@ -97,7 +101,7 @@ docker run -d --name rabbitmq \
 
 RabbitMQ management UI will be at `http://localhost:15672` (guest / guest).
 
-### 5. Start the FastAPI backend
+### 6. Start the FastAPI backend
 
 ```bash
 uvicorn app.main:app --reload
@@ -143,14 +147,14 @@ Frontend runs at `http://localhost:5173`.
 ```http
 POST /api/v1/internal/ingest
 Content-Type: application/json
-X-API-Key: <INTERNAL_API_KEY>
+X-Internal-Api-Key: <INTERNAL_API_KEY>
 
 { "experience_id": "exp_001" }
 ```
 
 ```http
 GET /api/v1/internal/experiences/{experience_id}
-X-API-Key: <INTERNAL_API_KEY>
+X-Internal-Api-Key: <INTERNAL_API_KEY>
 ```
 
 ### Agent Chat (Master Agent)

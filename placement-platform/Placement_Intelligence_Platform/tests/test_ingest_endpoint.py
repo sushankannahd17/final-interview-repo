@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
-
 from app.api.v1.endpoints import ingest
 from app.core.config import settings
+from tests.asgi_client import ASGIClient
 
 
 class FakeRepository:
@@ -24,7 +23,7 @@ def make_client(monkeypatch):
     monkeypatch.setattr(settings, "internal_api_key", "test-key")
     app = FastAPI()
     app.include_router(ingest.router, prefix="/api/v1")
-    return TestClient(app), repository
+    return ASGIClient(app), repository
 
 
 def test_ingest_rejects_missing_api_key(monkeypatch):

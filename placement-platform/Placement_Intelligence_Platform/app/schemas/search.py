@@ -16,10 +16,10 @@ class SearchFilters(BaseModel):
 
 
 class SearchRequest(BaseModel):
-    query: str
+    query: str = Field(min_length=1, max_length=4000)
     filters: SearchFilters = Field(default_factory=SearchFilters)
     strategy: str = "auto"
-    limit: int = 20
+    limit: int = Field(default=20, ge=1, le=50)
     caller_agent: Optional[str] = None
 
 

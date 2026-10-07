@@ -1,8 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Building2,
-  DollarSign,
-  Share2,
   Save,
   CheckCircle,
   FileCheck,
@@ -10,14 +8,10 @@ import {
   Edit2,
   Trash2,
   Eye,
-  Clock,
   Sparkles,
-  ExternalLink,
   BookOpen,
   Search,
-  HelpCircle,
   Globe,
-  Filter,
 } from 'lucide-react';
 import { DashboardLayout } from './DashboardLayout';
 import { ExperienceModal } from './ExperienceModal';
@@ -234,7 +228,6 @@ export const AlumniDashboard = ({ user, session, userProfile }) => {
   }, [communityExperiences, selectedCompany, selectedDifficulty, selectedResult, searchQuery]);
 
   const approvedCount = myExperiences.filter((e) => e.moderationStatus === 'APPROVED').length;
-  const pendingCount = myExperiences.filter((e) => e.moderationStatus === 'PENDING').length;
 
   return (
     <DashboardLayout
@@ -463,10 +456,6 @@ export const AlumniDashboard = ({ user, session, userProfile }) => {
               <p style={{ maxWidth: '420px', margin: '0 auto 1.25rem auto', color: '#64748b' }}>
                 Try adjusting your search criteria or contribute the first experience for this company!
               </p>
-              <button className="btn btn-primary" onClick={handleOpenCreate}>
-                <Plus size={15} />
-                <span>Submit Experience</span>
-              </button>
             </div>
           ) : (
             <div className="experience-grid">

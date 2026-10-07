@@ -1,8 +1,6 @@
 import {
   X,
   Building,
-  Calendar,
-  Award,
   CheckCircle,
   HelpCircle,
   Sparkles,

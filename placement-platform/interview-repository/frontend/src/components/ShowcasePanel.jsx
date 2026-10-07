@@ -1,11 +1,8 @@
 import {
-  Sparkles,
-  CheckCircle2,
   Building2,
   Users2,
   BookOpenCheck,
   ShieldCheck,
-  Compass,
 } from 'lucide-react';
 
 export const ShowcasePanel = () => {

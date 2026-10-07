@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Compass } from 'lucide-react';
+import { Compass } from 'lucide-react';
 import { ShowcasePanel } from './ShowcasePanel';
 import { AuthCard } from './AuthCard';
 import { ForgotPasswordView } from './ForgotPasswordView';

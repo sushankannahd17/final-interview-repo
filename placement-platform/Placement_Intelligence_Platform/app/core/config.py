@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Placement Intelligence Platform"
     environment: str = "development"
+    cors_allowed_origins: str = "http://localhost,http://localhost:5173,http://localhost:3000"
 
     # Supabase connection (primary data store via REST SDK)
     supabase_url: str = "https://your-project.supabase.co"
@@ -13,11 +14,13 @@ class Settings(BaseSettings):
 
     # RabbitMQ / CloudAMQP connection
     amqp_url: str = "amqp://guest:guest@localhost:5672/"
-    amqp_queue: str = "exp_queue"
+    # v2 is durable; keep it separate from the old non-durable exp_queue during rollout.
+    amqp_queue: str = "exp_queue_v2"
     dry_run: bool = False
 
     # Security and AI pipeline
-    internal_api_key: str = "change-me"
+    # Empty disables protected internal routes until a deployment key is set.
+    internal_api_key: str = ""
     llm_api_key: str | None = None
 
     # LLM / embedding configuration

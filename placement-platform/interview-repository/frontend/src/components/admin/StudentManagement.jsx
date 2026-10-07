@@ -5,11 +5,8 @@ import {
   Edit2,
   Trash2,
   Eye,
-  Upload,
   X,
   Save,
-  UserCheck,
-  UserX,
 } from 'lucide-react';
 
 export const StudentManagement = ({ session }) => {
