@@ -1,0 +1,23 @@
+# Nested repository metadata
+placement-platform/.git/
+placement-platform/interview-repository/frontend/.git/
+placement-platform/**/git-metadata-temp/
+
+# Secrets: commit templates, never local environment files
+**/.env
+**/.env.*
+!**/.env.example
+
+# Dependencies and generated output
+**/node_modules/
+**/dist/
+**/target/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+
+# IDE and OS files
+**/.idea/
+**/.vscode/
+**/.DS_Store
