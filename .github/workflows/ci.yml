@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  team-a-backend:
+    name: Team A backend (Spring Boot)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: placement-platform/interview-repository/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: placement-platform/interview-repository/backend/pom.xml
+      - run: mvn -B package -DskipTests
+
+  team-a-frontend:
+    name: Team A frontend (React)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: placement-platform/interview-repository/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: placement-platform/interview-repository/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  team-b-api:
+    name: Team B API (FastAPI)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: placement-platform/Placement_Intelligence_Platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: placement-platform/Placement_Intelligence_Platform/requirements.txt
+      - run: pip install -r requirements.txt
+      - run: python -m compileall -q app
+
+  team-b-frontend:
+    name: Team B frontend (React)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: placement-platform/Placement_Intelligence_Platform/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: placement-platform/Placement_Intelligence_Platform/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
